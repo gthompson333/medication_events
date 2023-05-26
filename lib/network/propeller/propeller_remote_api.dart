@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:http/http.dart';
 import 'propeller_remote_base.dart';
-import 'network_response_states.dart';
-import 'network_utils.dart';
+import 'package:medication_events/network/network_response_states.dart';
+import 'package:medication_events/network/network_utils.dart';
+import 'package:medication_events/network/models/medication_events_list.dart';
 
 class PropellerRemoteAPI {
   static const _eventsPath = "propeller_mobile_assessment_data.json";
@@ -23,8 +24,8 @@ class PropellerRemoteAPI {
       final response =
           await client.request(action: RequestAction.get, path: _eventsPath);
       if (response.statusCode == 200) {
-        return NetworkResult<Library>.success(
-            Library.fromRawJson(response.body));
+        return NetworkResult<MedicationEventsList>.success(
+            MedicationEventsList.fromRawJson(response.body));
       } else {
         return NetworkResult.error(_eventsFetchErrorMessage);
       }

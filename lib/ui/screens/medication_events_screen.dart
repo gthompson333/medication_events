@@ -1,84 +1,71 @@
-import 'package:book_app/model/library.dart';
-import 'package:book_app/model/result.dart';
-import 'package:book_app/network/remote_data_source.dart';
 import 'package:flutter/material.dart';
+import 'package:medication_events/network/models/medication_events_list.dart';
+import 'package:medication_events/network/propeller/propeller_remote_api.dart';
+import 'package:medication_events/network/network_response_states.dart';
+import 'add_event_screen.dart';
 
-import '../addscreen/add_book_screen.dart';
+class MedicationEventsScreen extends StatefulWidget {
+  const MedicationEventsScreen({super.key});
 
-class FavoriteBooksScreen extends StatefulWidget {
   @override
-  _FavoriteBooksScreenState createState() => _FavoriteBooksScreenState();
+  MedicationEventsScreenState createState() => MedicationEventsScreenState();
 }
 
-class _FavoriteBooksScreenState extends State<FavoriteBooksScreen> {
-  RemoteDataSource _apiResponse = RemoteDataSource();
+class MedicationEventsScreenState extends State<MedicationEventsScreen> {
+  final PropellerRemoteAPI _propellerRemoteAPI = PropellerRemoteAPI();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favorite Books"),
+        title: const Text("Medication Events"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddBookScreen()),
-          );
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddEventScreen()));
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       body: Center(
         child: FutureBuilder(
-            future: _apiResponse.getBooks(),
-            builder: (BuildContext context, AsyncSnapshot<Result> snapshot) {
+            future: _propellerRemoteAPI.getEvents(),
+            builder:
+                (BuildContext context, AsyncSnapshot<NetworkResult> snapshot) {
               if (snapshot.data is SuccessState) {
-                Library bookCollection = (snapshot.data as SuccessState).value;
+                MedicationEventsList medicationEvents =
+                    (snapshot.data as SuccessState).value;
                 return ListView.builder(
-                    itemCount: bookCollection.books.length,
+                    itemCount: medicationEvents.events.length,
                     itemBuilder: (context, index) {
-                      return bookListItem(index, bookCollection, context);
+                      return eventListItem(index, medicationEvents, context);
                     });
               } else if (snapshot.data is ErrorState) {
                 String errorMessage = (snapshot.data as ErrorState).msg;
                 return Text(errorMessage);
               } else {
-                return CircularProgressIndicator();
+                return const CircularProgressIndicator();
               }
             }),
       ),
     );
   }
 
-  Dismissible bookListItem(
-      int index, Library bookCollection, BuildContext context) {
-    return Dismissible(
-      onDismissed: (direction) async {
-        Result result = await _apiResponse.deleteBook(index);
-        if (result is SuccessState) {
-          setState(() {
-            bookCollection.books.removeAt(index);
-          });
-        }
-      },
-      background: Container(
-        color: Colors.red,
+  Widget eventListItem(
+      int index, MedicationEventsList medicationEvents, BuildContext context) {
+    return ListTile(
+      leading: Image.asset("images/book.png"),
+      title: Text(medicationEvents.events[index].medication),
+      subtitle: Text(
+        medicationEvents.events[index].medicationtype,
+        maxLines: 3,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.bodySmall,
       ),
-      key: Key(bookCollection.books[index].name),
-      child: ListTile(
-        leading: Image.asset("images/book.png"),
-        title: Text(bookCollection.books[index].name),
-        subtitle: Text(
-          bookCollection.books[index].description,
-          maxLines: 3,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.caption,
-        ),
-        isThreeLine: true,
-        trailing: Text(
-          bookCollection.books[index].author,
-          style: Theme.of(context).textTheme.caption,
-        ),
+      isThreeLine: true,
+      trailing: Text(
+        medicationEvents.events[index].datetime,
+        style: Theme.of(context).textTheme.bodySmall,
       ),
     );
   }

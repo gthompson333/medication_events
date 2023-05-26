@@ -2,7 +2,7 @@ class Nothing {
   Nothing._();
 }
 
-enum RequestAction { GET, POST, DELETE, PUT }
+enum RequestAction { get, post, delete, put }
 
 class RequestNotFoundException implements Exception {
   String reason;

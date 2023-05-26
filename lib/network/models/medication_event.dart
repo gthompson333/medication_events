@@ -1,30 +1,30 @@
-const idKey = 'id';
-const datetimeKey = 'datetime';
-const medicationKey = 'medication';
-const medicationTypeKey = 'medicationtype';
+class MedicationEvent {
+  static const _idKey = 'id';
+  static const _datetimeKey = 'datetime';
+  static const _medicationKey = 'medication';
+  static const _medicationTypeKey = 'medicationtype';
 
-class Event {
   late final int id;
   late final String datetime;
   late final String medication;
   late final String medicationtype;
 
-  Event(
+  MedicationEvent(
       {required this.id,
       required this.datetime,
       required this.medication,
       required this.medicationtype});
 
-  Event.fromJson(Map<String, dynamic> json)
-      : id = json[idKey],
-        datetime = json[datetimeKey],
-        medication = json[medicationKey],
-        medicationtype = json[medicationTypeKey];
+  MedicationEvent.fromJson(Map<String, dynamic> json)
+      : id = json[_idKey],
+        datetime = json[_datetimeKey],
+        medication = json[_medicationKey],
+        medicationtype = json[_medicationTypeKey];
 
   Map<String, dynamic> toJson() => {
-        idKey: id,
-        datetimeKey: datetime,
-        medicationKey: medication,
-        medicationTypeKey: medicationtype
+        _idKey: id,
+        _datetimeKey: datetime,
+        _medicationKey: medication,
+        _medicationTypeKey: medicationtype
       };
 }

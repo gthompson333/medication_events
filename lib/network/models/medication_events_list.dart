@@ -1,18 +1,21 @@
-import 'event.dart';
+import 'dart:convert';
+import 'medication_event.dart';
 
-class Events {
-  final List<Event> events;
+class MedicationEventsList {
+  static const _eventsKey = "events";
 
-  Library({this.books});
+  final List<MedicationEvent> events;
+  MedicationEventsList({required this.events});
 
-  factory Library.fromRawJson(String str) =>
-      Library.fromJson(json.decode(str));
+  factory MedicationEventsList.fromRawJson(String str) =>
+      MedicationEventsList.fromJson(json.decode(str));
 
-  factory Library.fromJson(Map<String, dynamic> json) => Library(
-      books: List<Book>.from(
-          json["bookList"].map((x) => Book.fromJson(x))));
+  factory MedicationEventsList.fromJson(Map<String, dynamic> json) =>
+      MedicationEventsList(
+          events: List<MedicationEvent>.from(
+              json[_eventsKey].map((x) => MedicationEvent.fromJson(x))));
 
   Map<String, dynamic> toJson() => {
-    "bookList": List<dynamic>.from(books.map((x) => x.toJson())),
-  };
+        _eventsKey: List<dynamic>.from(events.map((x) => x.toJson())),
+      };
 }
