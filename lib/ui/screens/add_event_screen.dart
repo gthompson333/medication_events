@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medication_events/network/models/medication_event.dart';
+import 'package:medication_events/services/models/medication_event.dart';
 
 class AddEventScreen extends StatefulWidget {
   const AddEventScreen({super.key});

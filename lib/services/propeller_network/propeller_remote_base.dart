@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:medication_events/network/network_utils.dart';
+import 'package:medication_events/services/network_utils.dart';
 
 class PropellerRemoteBase {
-  static const String _baseUrl = "https://s3-us-west-2.amazonaws.com/ph-svc-mobile-interview-jyzi2gyja";
+  static const String _baseUrl =
+      "https://s3-us-west-2.amazonaws.com/ph-svc-mobile-interview-jyzi2gyja";
   final Client _client;
 
   PropellerRemoteBase(this._client);

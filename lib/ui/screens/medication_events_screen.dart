@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medication_events/network/models/medication_events_list.dart';
-import 'package:medication_events/network/propeller/propeller_remote_api.dart';
-import 'package:medication_events/network/network_response_states.dart';
+import 'package:provider/provider.dart';
+import 'package:medication_events/business_logic/view_models/medication_events_vm.dart';
 import 'add_event_screen.dart';
 
 class MedicationEventsScreen extends StatefulWidget {
@@ -12,7 +11,14 @@ class MedicationEventsScreen extends StatefulWidget {
 }
 
 class MedicationEventsScreenState extends State<MedicationEventsScreen> {
-  final PropellerRemoteAPI _propellerRemoteAPI = PropellerRemoteAPI();
+  // Medication view model events.
+  final MedicationEventsListVM _medicationEventsList = MedicationEventsListVM();
+
+  @override
+  void initState() {
+    _medicationEventsList.refreshEvents();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,44 +33,30 @@ class MedicationEventsScreenState extends State<MedicationEventsScreen> {
         },
         child: const Icon(Icons.add),
       ),
-      body: Center(
-        child: FutureBuilder(
-            future: _propellerRemoteAPI.getEvents(),
-            builder:
-                (BuildContext context, AsyncSnapshot<NetworkResult> snapshot) {
-              if (snapshot.data is SuccessState) {
-                MedicationEventsList medicationEvents =
-                    (snapshot.data as SuccessState).value;
-                return ListView.builder(
-                    itemCount: medicationEvents.events.length,
-                    itemBuilder: (context, index) {
-                      return eventListItem(index, medicationEvents, context);
-                    });
-              } else if (snapshot.data is ErrorState) {
-                String errorMessage = (snapshot.data as ErrorState).msg;
-                return Text(errorMessage);
-              } else {
-                return const CircularProgressIndicator();
-              }
-            }),
-      ),
+      body: _buildListView(_medicationEventsList),
     );
   }
 
-  Widget eventListItem(
-      int index, MedicationEventsList medicationEvents, BuildContext context) {
+  Widget _buildListView(MedicationEventsListVM viewModel) {
+    return ChangeNotifierProvider<MedicationEventsListVM>(
+      create: (context) => viewModel,
+      child: Consumer<MedicationEventsListVM>(builder: (context, model, child) {
+        if (model.errorMessage != null) {}
+        return ListView.builder(
+            itemCount: model.events.length,
+            itemBuilder: (context, index) {
+              return _eventListItem(model.events[index], context);
+            });
+      }),
+    );
+  }
+
+  Widget _eventListItem(MedicationEventVM event, BuildContext context) {
     return ListTile(
-      leading: Image.asset("images/book.png"),
-      title: Text(medicationEvents.events[index].medication),
-      subtitle: Text(
-        medicationEvents.events[index].medicationtype,
-        maxLines: 3,
-        overflow: TextOverflow.ellipsis,
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
-      isThreeLine: true,
+      title: Text(event.name, style: Theme.of(context).textTheme.bodyMedium),
+      subtitle: Text(event.type, style: Theme.of(context).textTheme.bodySmall),
       trailing: Text(
-        medicationEvents.events[index].datetime,
+        event.dateTime,
         style: Theme.of(context).textTheme.bodySmall,
       ),
     );
