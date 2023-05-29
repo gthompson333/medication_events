@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:medication_events/services/models/medication_event.dart';
+import 'package:medication_events/business_logic/view_models/medication_events_vm.dart';
 
 class AddEventScreen extends StatefulWidget {
-  const AddEventScreen({super.key});
+  const AddEventScreen({super.key, required this.onCreate});
+
+  final Function(MedicationEventVM) onCreate;
 
   @override
   AddEventScreenState createState() => AddEventScreenState();
 }
 
 class AddEventScreenState extends State<AddEventScreen> {
-  late String _name, _timestamp;
+  String _name = '';
+  String _datetime = '';
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +61,7 @@ class AddEventScreenState extends State<AddEventScreen> {
         labelText: "Date and Time",
       ),
       onChanged: (value) {
-        _timestamp = value;
+        _datetime = value;
       },
     );
   }
@@ -66,8 +69,9 @@ class AddEventScreenState extends State<AddEventScreen> {
   ElevatedButton submitButton() {
     return ElevatedButton(
       onPressed: () {
-        final event = MedicationEvent(
-            id: 0, datetime: _timestamp, medication: _name, medicationtype: "");
+        widget.onCreate(
+            MedicationEventVM(name: _name, type: '', datetime: _datetime));
+        Navigator.of(context).pop();
       },
       child: const Text(
         "Add",

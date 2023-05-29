@@ -47,7 +47,9 @@ class MedicationEventsListVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _addToEvents(String alphabeticCode) {
+  void addToEvents(MedicationEventVM event) {
+    _events.add(event);
+    _events.sort((a, b) => b.datetimeObj.compareTo(a.datetimeObj));
     notifyListeners();
   }
 }

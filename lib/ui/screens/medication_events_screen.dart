@@ -28,8 +28,16 @@ class MedicationEventsScreenState extends State<MedicationEventsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddEventScreen()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddEventScreen(
+                onCreate: (event) {
+                  _medicationEventsList.addToEvents(event);
+                },
+              ),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),
