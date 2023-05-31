@@ -22,7 +22,7 @@ class AddEventScreenState extends State<AddEventScreen> {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: DateTime(1980),
       lastDate: DateTime.now(),
     );
 
@@ -103,8 +103,8 @@ class AddEventScreenState extends State<AddEventScreen> {
   Widget submitButton() {
     return ElevatedButton(
       onPressed: () {
-        DateTime combinedDateTime = _eventDate.copyWith(
-            hour: _eventTime.hour, minute: _eventTime.minute).toUtc();
+        DateTime combinedDateTime = _eventDate
+            .copyWith(hour: _eventTime.hour, minute: _eventTime.minute);
         widget.onCreate(MedicationEventVM(
             name: _name,
             type: '',

@@ -60,12 +60,11 @@ class MedicationEventsScreenState extends State<MedicationEventsScreen> {
   }
 
   Widget _eventListItem(MedicationEventVM event, BuildContext context) {
-    return ListTile(
-      title: Text(event.name, style: Theme.of(context).textTheme.bodyLarge),
-      subtitle: Text(event.type, style: Theme.of(context).textTheme.bodyMedium),
-      trailing: Text(
-        event.datetime,
-        style: Theme.of(context).textTheme.bodyMedium,
+    return Card(
+      child: ListTile(
+        title: Text(event.name),
+        subtitle: Text(event.type),
+        trailing: Text(event.datetime),
       ),
     );
   }

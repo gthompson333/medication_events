@@ -15,7 +15,6 @@ class PropellerMedicationEventsApp extends StatelessWidget {
     return MaterialApp(
         title: 'Propeller Health Medication Events',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
         home: const MedicationEventsScreen());
