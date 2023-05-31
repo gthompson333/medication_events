@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'ui/screens/medication_events_screen.dart';
+import 'ui/propeller_theme.dart';
 
 void main() {
   initializeDateFormatting();
@@ -14,9 +15,9 @@ class PropellerMedicationEventsApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Propeller Health Medication Events',
-        theme: ThemeData(
-          useMaterial3: true,
-        ),
+        theme: PropellerTheme.light(),
+        darkTheme: PropellerTheme.dark(),
+        themeMode: ThemeMode.system,
         home: const MedicationEventsScreen());
   }
 }
