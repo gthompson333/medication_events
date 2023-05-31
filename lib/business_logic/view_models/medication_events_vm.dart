@@ -1,15 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
-//import 'package:medication_events/services/propeller_network/propeller_remote_api.dart';
+
+import 'package:medication_events/services/propeller_network/propeller_remote_api.dart';
 import 'package:medication_events/services/propeller_mock/propeller_mock_api.dart';
 import 'package:medication_events/services/network_response_states.dart';
+import 'package:medication_events/services/propeller_api.dart';
 
 class MedicationEventsListVM extends ChangeNotifier {
   static const _eventsFetchErrorMessage =
       "Medication events list not available";
 
-  //final PropellerRemoteAPI _propellerAPI = PropellerRemoteAPI();
-  final PropellerMockAPI _propellerAPI = PropellerMockAPI();
+  static const _useMockPropellerAPI = true;
+
+  final PropellerAPI _propellerAPI =
+      _useMockPropellerAPI ? PropellerMockAPI() : PropellerRemoteAPI();
 
   // A list of medication view model events suitable for presentation in the UI.
   List<MedicationEventVM> _events = [];
