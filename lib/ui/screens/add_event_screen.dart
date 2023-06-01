@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/cupertino.dart';
 import 'package:medication_events/business_logic/view_models/medication_events_vm.dart';
 
 class AddEventScreen extends StatefulWidget {
@@ -18,29 +20,70 @@ class AddEventScreenState extends State<AddEventScreen> {
   DateTime _eventDate = DateTime.now();
   TimeOfDay _eventTime = TimeOfDay.now();
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
+  void _showCupertinoDialog(Widget child) {
+    showCupertinoModalPopup<void>(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1980),
-      lastDate: DateTime.now(),
+      builder: (BuildContext context) => Container(
+        height: 216,
+        padding: const EdgeInsets.only(top: 6.0),
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: SafeArea(
+          top: false,
+          child: child,
+        ),
+      ),
     );
+  }
 
-    if (pickedDate != null) {
-      setState(() {
-        _eventDate = pickedDate;
-      });
+  Future<void> _selectDate(BuildContext context) async {
+    final initialDate = DateTime.now();
+
+    if (Platform.isIOS) {
+      _showCupertinoDialog(CupertinoDatePicker(
+        initialDateTime: initialDate,
+        mode: CupertinoDatePickerMode.date,
+        use24hFormat: true,
+        showDayOfWeek: true,
+        onDateTimeChanged: (DateTime pickedDate) {
+          setState(() => _eventDate = pickedDate);
+        },
+      ));
+    } else {
+      final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: DateTime(1980),
+        lastDate: DateTime.now(),
+      );
+
+      if (pickedDate != null) {
+        setState(() => _eventDate = pickedDate);
+      }
     }
   }
 
   Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime =
-        await showTimePicker(context: context, initialTime: TimeOfDay.now());
+    if (Platform.isIOS) {
+      _showCupertinoDialog(CupertinoDatePicker(
+        initialDateTime: DateTime.now(),
+        mode: CupertinoDatePickerMode.time,
+        onDateTimeChanged: (DateTime pickedTime) {
+          setState(() => _eventTime =
+              TimeOfDay(hour: pickedTime.hour, minute: pickedTime.minute));
+        },
+      ));
+    } else {
+      final TimeOfDay? pickedTime =
+          await showTimePicker(context: context, initialTime: TimeOfDay.now());
 
-    if (pickedTime != null) {
-      setState(() {
-        _eventTime = pickedTime;
-      });
+      if (pickedTime != null) {
+        setState(() {
+          _eventTime = pickedTime;
+        });
+      }
     }
   }
 
@@ -103,8 +146,8 @@ class AddEventScreenState extends State<AddEventScreen> {
   Widget submitButton() {
     return ElevatedButton(
       onPressed: () {
-        DateTime combinedDateTime = _eventDate
-            .copyWith(hour: _eventTime.hour, minute: _eventTime.minute);
+        DateTime combinedDateTime = _eventDate.copyWith(
+            hour: _eventTime.hour, minute: _eventTime.minute);
         widget.onCreate(MedicationEventVM(
             name: _name,
             type: '',

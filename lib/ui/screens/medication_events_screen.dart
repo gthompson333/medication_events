@@ -50,7 +50,6 @@ class MedicationEventsScreenState extends State<MedicationEventsScreen> {
     return ChangeNotifierProvider<MedicationEventsListVM>(
       create: (context) => viewModel,
       child: Consumer<MedicationEventsListVM>(builder: (context, model, child) {
-        if (model.errorMessage != null) {}
         return ListView.builder(
             itemCount: model.events.length,
             itemBuilder: (context, index) {
